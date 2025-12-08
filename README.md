@@ -23,17 +23,17 @@ O software consiste na implementação prática dos conceitos de desenvolvimento
 
 ## 🚀 Funcionalidades Implementadas
 
-[cite_start]O jogo foi desenvolvido seguindo estritamente as especificações do **Capítulo 6** do livro *Android 6 for Programmers*, incluindo:
+O jogo foi desenvolvido seguindo estritamente as especificações do **Capítulo 6** do livro *Android 6 for Programmers*, incluindo:
 
-* [cite_start]**Mecânica de Tiro:** Disparo de balas de canhão ao tocar na tela, calculando ângulo e trajetória baseados na posição do toque.
-* [cite_start]**Detecção de Colisão:** Implementação lógica para verificar colisões entre a bala, o bloqueador (obstáculo) e os alvos.
+* **Mecânica de Tiro:** Disparo de balas de canhão ao tocar na tela, calculando ângulo e trajetória baseados na posição do toque.
+* **Detecção de Colisão:** Implementação lógica para verificar colisões entre a bala, o bloqueador (obstáculo) e os alvos.
 * **Sistema de Tempo:**
     * O jogo possui um limite de tempo (contagem regressiva).
-    * [cite_start]**Bônus:** Acertar um alvo adiciona 3 segundos ao tempo.
-    * [cite_start]**Penalidade:** Acertar o bloqueador (barreira) subtrai 2 segundos do tempo.
-* [cite_start]**Efeitos Sonoros:** Utilização de `SoundPool` para reproduzir sons de disparo, vidro quebrando (acerto no alvo) e impacto no bloqueador.
-* [cite_start]**Animação Frame-a-Frame:** Uso de `SurfaceView` e uma `Thread` dedicada para desenhar os gráficos e atualizar a posição dos elementos (Game Loop) sem travar a interface do usuário.
-* [cite_start]**Immersive Mode:** O jogo ocupa a tela inteira, ocultando as barras de sistema do Android para maior imersão.
+    * **Bônus:** Acertar um alvo adiciona 3 segundos ao tempo.
+    * **Penalidade:** Acertar o bloqueador (barreira) subtrai 2 segundos do tempo.
+* **Efeitos Sonoros:** Utilização de `SoundPool` para reproduzir sons de disparo, vidro quebrando (acerto no alvo) e impacto no bloqueador.
+* **Animação Frame-a-Frame:** Uso de `SurfaceView` e uma `Thread` dedicada para desenhar os gráficos e atualizar a posição dos elementos (Game Loop) sem travar a interface do usuário.
+* **Immersive Mode:** O jogo ocupa a tela inteira, ocultando as barras de sistema do Android para maior imersão.
 
 ## 🛠️ Tecnologias Utilizadas
 
