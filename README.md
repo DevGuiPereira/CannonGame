@@ -3,7 +3,7 @@
 Projeto desenvolvido em grupo, replicando o jogo de tiro ao alvo do livro "Android 6 for Programmers".
 
 <p align="center">
-  <img src="cannongame.jpeg" alt="Tela do Jogo Cannon Game" width="400px">
+  <img src="cannongame.jpeg" alt="Tela do Jogo Cannon Game" width="600px">
 </p>
 
 ## 👥 Integrantes do Grupo
