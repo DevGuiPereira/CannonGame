@@ -7,4 +7,81 @@
         android:id="@+id/cannonView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
+    <RelativeLayout
+        android:id="@+id/startScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#DD000000"
+        android:clickable="true"
+        android:focusable="true"> <TextView
+        android:id="@+id/titleGame"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CANNON GAME"
+        android:textColor="#FFFFFF"
+        android:textSize="50sp"
+        android:textStyle="bold"
+        android:layout_centerInParent="true"
+        android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/btn_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="INICIAR JOGO"
+            android:textSize="24sp"
+            android:padding="15dp"
+            android:layout_below="@id/titleGame"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/endScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#E6000000"
+        android:clickable="true"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/tv_game_result"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="YOU WIN!"
+            android:textColor="#00FF00"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:shadowColor="#000000"
+            android:shadowDx="5"
+            android:shadowDy="5"
+            android:shadowRadius="5"/>
+
+        <TextView
+            android:id="@+id/tv_final_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Score: 1000\nTempo: 12s"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="20dp"/>
+
+        <Button
+            android:id="@+id/btn_restart"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="JOGAR NOVAMENTE"
+            android:textSize="18sp"
+            android:paddingStart="30dp"
+            android:paddingEnd="30dp"
+            android:backgroundTint="#FF4081"
+            android:textColor="#FFFFFF"/>
+
+    </LinearLayout>
 </FrameLayout>

@@ -21,6 +21,7 @@ import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -30,6 +31,7 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     private static final String TAG = "CannonView";
 
     // --- CONSTANTES DE JOGO ---
+    private boolean isGameRunning = false;
     public static final int MISS_PENALTY = 2; // segundos deduzidos ao errar
     public static final int HIT_REWARD = 3; // segundos adicionados ao acertar
 
@@ -61,6 +63,11 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     private CannonThread cannonThread; // controla o loop do jogo
     private boolean dialogIsDisplayed = false;
 
+    // Variáveis da interface de Fim de Jogo
+    private View endScreen;
+    private TextView tvResult;
+    private TextView tvScore;
+
     // Objetos do Jogo
     private Activity activity; // referência para a Activity
     private Cannon cannon;
@@ -76,6 +83,8 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     private double timeLeft; // tempo restante
     private int shotsFired; // tiros disparados
     private double totalElapsedTime; // tempo total decorrido
+
+    private int score = 0;
 
     // Variáveis de Som e Desenho
     private SoundPool soundPool;
@@ -179,7 +188,10 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
 
         timeLeft = 10;
         shotsFired = 0;
+        score = 0;
         totalElapsedTime = 0.0;
+
+        isGameRunning = true;
 
         if (gameOver) {
             gameOver = false;
@@ -196,6 +208,9 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
 
     // Chamado repetidamente pela CannonThread para atualizar elementos do jogo
     private void updatePositions(double elapsedTimeMS) {
+        if (!isGameRunning) {
+            return;
+        }
         double interval = elapsedTimeMS / 1000.0; // converte para segundos
 
         // Atualiza posição da bola se ela estiver na tela
@@ -233,6 +248,8 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
                 if (cannon.getCannonball().collidesWith(targets.get(n))) {
                     targets.get(n).playSound(); // som de acerto
                     timeLeft += targets.get(n).getHitReward(); // adiciona tempo extra
+
+                    score += 100;
 
                     cannon.removeCannonball(); // remove a bola
                     targets.remove(n); // remove o alvo atingido
@@ -283,37 +300,34 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
 
     // Exibe um AlertDialog quando o jogo termina
     private void showGameOverDialog(final int messageId) {
-        // DialogFragment para exibir estatísticas e iniciar novo jogo
-        final DialogFragment gameResult = new DialogFragment() {
-            @Override
-            public Dialog onCreateDialog(Bundle bundle) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setTitle(getResources().getString(messageId));
-
-                // Exibe número de tiros e tempo decorrido
-                builder.setMessage(getResources().getString(
-                        R.string.results_format, shotsFired, totalElapsedTime));
-
-                builder.setPositiveButton(R.string.reset_game,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialogIsDisplayed = false;
-                                newGame(); // configura e inicia novo jogo
-                            }
-                        });
-
-                return builder.create();
-            }
-        };
-
-        // Na thread da GUI, usa FragmentManager para exibir o DialogFragment
+        // Usa a thread de UI para mexer na tela (obrigatório)
         activity.runOnUiThread(new Runnable() {
             public void run() {
-                showSystemBars(); // sai do modo imersivo para mostrar diálogos
+                // 1. Configura o Texto de Vitória ou Derrota
+                if (messageId == R.string.win) {
+                    tvResult.setText("VOCÊ VENCEU!");
+                    tvResult.setTextColor(Color.GREEN);
+                } else {
+                    tvResult.setText("GAME OVER");
+                    tvResult.setTextColor(Color.RED);
+                }
+
+                // 2. Formata as estatísticas
+                // %.2f significa: número decimal com 2 casas após a vírgula
+                String timeFormatted = String.format("%.2f", totalElapsedTime);
+
+                // 3. Monta o texto final com PULA LINHA (\n)
+                String finalText = "Pontuação: " + score + "\n" +
+                        "Tempo Total: " + timeFormatted + "s";
+
+                tvScore.setText(finalText);
+
+                // 4. Mostra a tela
+                if (endScreen != null) {
+                    endScreen.setVisibility(View.VISIBLE);
+                }
+
                 dialogIsDisplayed = true;
-                gameResult.setCancelable(false); // modal
-                gameResult.show(activity.getFragmentManager(), "results");
             }
         });
     }
@@ -328,6 +342,14 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
         // Exibe o tempo restante
         canvas.drawText(getResources().getString(R.string.time_remaining_format, timeLeft),
                 50, 100, textPaint);
+
+        String scoreText = getResources().getString(R.string.score_hud_format, score);
+
+        // Calculamos a largura do texto para alinhar direitinho à direita
+        float textWidth = textPaint.measureText(scoreText);
+
+        // Desenhamos: (Largura da Tela - Largura do Texto - Margem), Altura 100
+        canvas.drawText(scoreText, screenWidth - textWidth - 50, 100, textPaint);
 
         if (cannon != null)
             cannon.draw(canvas);
@@ -392,6 +414,9 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
     public void surfaceCreated(SurfaceHolder holder) {
         if (!dialogIsDisplayed) {
             newGame();
+
+            isGameRunning = false;
+
             cannonThread = new CannonThread(holder);
             cannonThread.setRunning(true);
             cannonThread.start();
@@ -455,5 +480,12 @@ public class CannonView extends SurfaceView implements SurfaceHolder.Callback {
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
                             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION |
                             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+    }
+
+    // Método para conectar o XML com a lógica do jogo
+    public void setEndGameScreen(View endScreen, TextView tvResult, TextView tvScore) {
+        this.endScreen = endScreen;
+        this.tvResult = tvResult;
+        this.tvScore = tvScore;
     }
 }
